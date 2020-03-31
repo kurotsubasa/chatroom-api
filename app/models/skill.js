@@ -8,6 +8,19 @@ const skillSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true
+  },
+  cost: {
+    type: Number,
+    required: true
+  },
+  resource: {
+    type: String,
+    required: true
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   }
 }, {
   timestamps: true

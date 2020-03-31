@@ -30,7 +30,7 @@ const router = express.Router()
 // INDEX
 // GET /skills
 router.get('/skills', (req, res, next) => {
-  Skill.map(skill => skill)
+  Skill.find()
     .sort({updatedAt: -1})
     // respond with status 200 and JSON of the skills
     .then(skills => {
@@ -57,23 +57,10 @@ router.get('/skills/:id', (req, res, next) => {
 // CREATE
 // POST /skills
 router.post('/skills', requireToken, (req, res, next) => {
-  const skillName = req.body.skill.name
   // set owner of new skill to be current user
   req.body.skill.owner = req.user.id
-  const userId = req.user._id
   // Check to see if the item exists
-  Skill.find({name: skillName})
-    .then(skills => {
-      if (skills) {
-        const foundskill = skills.find(skill => {
-          const owner = skill.owner._id ? skill.owner._id : skill.owner
-          return userId.equals(owner)
-        })
-        if (foundskill) {
-          return Skill.create(req.body.skill)
-        }
-      }
-    })
+  Skill.create(req.body.skill)
     .then(skill => res.status(201).json({ skill: skill.toObject() }))
     .catch(next)
 })
@@ -90,10 +77,12 @@ router.patch('/skills/:id', requireToken, removeBlanks, (req, res, next) => {
     .then(skill => {
       // pass the `req` object and the Mongoose record to `requireOwnership`
       // it will throw an error if the current user isn't the owner
+      console.log(req.params.id)
+
       requireOwnership(req, skill)
 
       // pass the result of Mongoose's `.update` to the next `.then`
-      return skill.findOneAndUpdate({_id: req.params.id}, req.body.skill, {new: true})
+      return Skill.findOneAndUpdate({_id: req.params.id}, req.body.skill, {new: true})
     })
     // if that succeeded, return 204 and no JSON
     .then(skill => res.status(201).json({ skill: skill.toObject() }))

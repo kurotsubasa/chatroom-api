@@ -21,6 +21,10 @@ const foragerSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  skill: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Skill'
+  },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

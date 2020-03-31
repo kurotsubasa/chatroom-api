@@ -60,6 +60,8 @@ router.post('/foragers', requireToken, (req, res, next) => {
   // set owner of new example to be current user
   req.body.forager.owner = req.user.id
 
+  customErrors.paramTotal(req.body.forager)
+
   Forager.create(req.body.forager)
     // respond to succesful `create` with status 201 and JSON of new "example"
     .then(forager => {
@@ -77,6 +79,7 @@ router.patch('/foragers/:id', requireToken, removeBlanks, (req, res, next) => {
   // if the client attempts to change the `owner` property by including a new
   // owner, prevent that by deleting that key/value pair
   delete req.body.forager.owner
+  customErrors.paramTotal(req.body.forager)
 
   Forager.findById(req.params.id)
     .then(handle404)
