@@ -24,6 +24,9 @@ Fantasy Foragers is a text based, turn based, real time, multiplayer online role
 ## ERD
 ![link] (https://imgur.com/a/O4DZs88)
 
+## Links
+-   [Fantasy Foragers deployed api] (https://sleepy-harbor-73832.herokuapp.com/)
+
 ## Setup
 -   `npm install --socket.io`
 -   `npm install`
