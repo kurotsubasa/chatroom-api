@@ -13,7 +13,8 @@ const skillRoutes = require('./app/routes/skill_routes')
 const errorHandler = require('./lib/error_handler')
 const replaceToken = require('./lib/replace_token')
 const requestLogger = require('./lib/request_logger')
-const socketIo = require('socket.io')
+const app = express()
+const http = require('http').createServer(app)
 
 // require database configuration logic
 // `db` will be the actual Mongo URI as a string
@@ -34,9 +35,6 @@ mongoose.connect(db, {
   useNewUrlParser: true,
   useCreateIndex: true
 })
-
-// instantiate express application object
-const app = express()
 
 // set CORS headers on response from this API using the `cors` NPM package
 // `CLIENT_ORIGIN` is an environment variable that will be set on Heroku
@@ -75,11 +73,11 @@ app.use(skillRoutes)
 app.use(errorHandler)
 
 // run API on designated port (4741 in this case)
-const server = app.listen(port, () => {
+http.listen(port, () => {
   console.log('listening on port ' + port)
 })
 
-const io = socketIo(server)
+const io = require('socket.io')(http)
 
 io.on('connection', (socketIo) => {
   console.log('User connected')
@@ -88,7 +86,7 @@ io.on('connection', (socketIo) => {
     console.log('received game state')
     console.log(data)
     const fighter = data
-    socketIo.broadcast.emit('new stats', {fighter})
+    io.emit('new peep', fighter)
   })
   socketIo.on('disconnect', () => {
     console.log('user disconnected')
