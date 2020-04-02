@@ -13,6 +13,7 @@ const skillRoutes = require('./app/routes/skill_routes')
 const errorHandler = require('./lib/error_handler')
 const replaceToken = require('./lib/replace_token')
 const requestLogger = require('./lib/request_logger')
+const socketIo = require('socket.io')
 
 // require database configuration logic
 // `db` will be the actual Mongo URI as a string
@@ -74,8 +75,24 @@ app.use(skillRoutes)
 app.use(errorHandler)
 
 // run API on designated port (4741 in this case)
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log('listening on port ' + port)
+})
+
+const io = socketIo(server)
+
+io.on('connection', (socketIo) => {
+  console.log('User connected')
+
+  socketIo.on('new peep', (data) => {
+    console.log('received game state')
+    console.log(data)
+    const fighter = data
+    socketIo.broadcast.emit('new stats', {fighter})
+  })
+  socketIo.on('disconnect', () => {
+    console.log('user disconnected')
+  })
 })
 
 // needed for testing
