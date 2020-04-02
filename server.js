@@ -88,6 +88,14 @@ io.on('connection', (socketIo) => {
     const fighter = data
     io.emit('new peep', fighter)
   })
+
+  socketIo.on('new selected', (data) => {
+    console.log('received gamer character')
+    console.log(data)
+    const fighter = data
+    io.emit('new person', fighter)
+  })
+
   socketIo.on('disconnect', () => {
     console.log('user disconnected')
   })
