@@ -83,8 +83,6 @@ io.on('connection', (socketIo) => {
   console.log('User connected')
 
   socketIo.on('new peep', (data) => {
-    console.log('received game state')
-    console.log(data)
     const fighter = data
     io.emit('new peep', fighter)
   })

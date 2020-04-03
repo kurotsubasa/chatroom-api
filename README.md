@@ -26,6 +26,10 @@ Fantasy Foragers is a text based, turn based, real time, multiplayer online role
 
 ## Links
 -   [Fantasy Foragers deployed api] (https://sleepy-harbor-73832.herokuapp.com/)
+-   [Fantasy Foragers deployed site] (https://kurotsubasa.github.io/fantasy-foragers-client/#/)
+-   [Fantasy Foragers api repo] (https://github.com/kurotsubasa/fantasy-foragers-api)
+-   [Fantasy Foragers client repo] (https://github.com/kurotsubasa/fantasy-foragers-client)
+
 
 ## Setup
 -   `npm install --socket.io`
