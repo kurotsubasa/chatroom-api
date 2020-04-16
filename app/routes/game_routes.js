@@ -74,7 +74,7 @@ router.post('/games', requireToken, (req, res, next) => {
 
 // UPDATE
 // PATCH /games/5a7db6c74d55bc51bdf39793
-router.patch('/games/:id', requireToken, removeBlanks, (req, res, next) => {
+router.patch('/games/:id', removeBlanks, (req, res, next) => {
   // if the client attempts to change the `owner` property by including a new
   // owner, prevent that by deleting that key/value pair
   delete req.body.game.owner
@@ -84,8 +84,15 @@ router.patch('/games/:id', requireToken, removeBlanks, (req, res, next) => {
     .then(game => {
       // pass the `req` object and the Mongoose record to `requireOwnership`
       // it will throw an error if the current user isn't the owner
-      requireOwnership(req, game)
+      console.log(req.body.game.player2)
+      console.log(game.player2)
+      if (game.player2 === undefined) {
+        return Game.findOneAndUpdate({_id: req.params.id}, req.body.game, {new: true})
+      }
 
+      if ((req.body.game.player1 !== game.player1) && (req.body.game.player2 !== game.player2)) {
+        return 'You are not a player in this game'
+      }
       // pass the result of Mongoose's `.update` to the next `.then`
       return Game.findOneAndUpdate({_id: req.params.id}, req.body.game, {new: true})
     })

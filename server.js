@@ -86,14 +86,8 @@ io.on('connection', (socketIo) => {
 
   socketIo.on('new peep', (data) => {
     const fighter = data
+    console.log(fighter)
     io.emit('new peep', fighter)
-  })
-
-  socketIo.on('new selected', (data) => {
-    console.log('received gamer character')
-    console.log(data)
-    const fighter = data
-    io.emit('new person', fighter)
   })
 
   socketIo.on('disconnect', () => {
