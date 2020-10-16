@@ -4,7 +4,7 @@ const express = require('express')
 const passport = require('passport')
 
 // pull in Mongoose model for games
-const Game = require('../models/game')
+const Chatroom = require('../models/chatroom')
 
 // this is a collection of methods that help us detect situations when we need
 // to throw a custom error
@@ -29,42 +29,42 @@ const router = express.Router()
 
 // INDEX
 // GET /games
-router.get('/games', requireToken, (req, res, next) => {
-  Game.find()
-    .then(games => {
+router.get('/chatrooms', requireToken, (req, res, next) => {
+  Chatroom.find()
+    .then(chatrooms => {
       // `games` will be an array of Mongoose documents
       // we want to convert each one to a POJO, so we use `.map` to
       // apply `.toObject` to each one
-      return games.map(game => game.toObject())
+      return chatrooms.map(chatroom => chatroom.toObject())
     })
     // respond with status 200 and JSON of the games
-    .then(games => res.status(200).json({ games: games }))
+    .then(chatrooms => res.status(200).json({ chatrooms: chatrooms }))
     // if an error occurs, pass it to the handler
     .catch(next)
 })
 
 // SHOW
 // GET /games/5a7db6c74d55bc51bdf39793
-router.get('/games/:id', requireToken, (req, res, next) => {
+router.get('/chatrooms/:id', requireToken, (req, res, next) => {
   // req.params.id will be set based on the `:id` in the route
-  Game.findById(req.params.id)
+  Chatroom.findById(req.params.id)
     .then(handle404)
     // if `findById` is succesful, respond with 200 and "game" JSON
-    .then(game => res.status(200).json({ game: game.toObject() }))
+    .then(chatroom => res.status(200).json({ chatroom: chatroom.toObject() }))
     // if an error occurs, pass it to the handler
     .catch(next)
 })
 
 // CREATE
 // POST /games
-router.post('/games', requireToken, (req, res, next) => {
+router.post('/chatrooms', requireToken, (req, res, next) => {
   // set owner of new game to be current user
   req.body.game.owner = req.user.id
 
-  Game.create(req.body.game)
+  Chatroom.create(req.body.chatroom)
     // respond to succesful `create` with status 201 and JSON of new "game"
-    .then(game => {
-      res.status(201).json({ game: game.toObject() })
+    .then(chatroom => {
+      res.status(201).json({ chatroom: chatroom.toObject() })
     })
     // if an error occurs, pass it off to our error handler
     // the error handler needs the error message and the `res` object so that it
@@ -74,30 +74,28 @@ router.post('/games', requireToken, (req, res, next) => {
 
 // UPDATE
 // PATCH /games/5a7db6c74d55bc51bdf39793
-router.patch('/games/:id', removeBlanks, (req, res, next) => {
+router.patch('/chatrooms/:id', removeBlanks, (req, res, next) => {
   // if the client attempts to change the `owner` property by including a new
   // owner, prevent that by deleting that key/value pair
-  delete req.body.game.owner
+  delete req.body.chatroom.owner
 
-  Game.findById(req.params.id)
+  Chatroom.findById(req.params.id)
     .then(handle404)
-    .then(game => {
+    .then(chatroom => {
       // pass the `req` object and the Mongoose record to `requireOwnership`
       // it will throw an error if the current user isn't the owner
-      console.log(req.body.game.player2)
-      console.log(game.player2)
-      if (game.player2 === undefined) {
-        return Game.findOneAndUpdate({_id: req.params.id}, req.body.game, {new: true})
+      if (chatroom.user2 === undefined) {
+        return Chatroom.findOneAndUpdate({_id: req.params.id}, req.body.chatroom, {new: true})
       }
 
-      if ((req.body.game.player1 !== game.player1) && (req.body.game.player2 !== game.player2)) {
-        return 'You are not a player in this game'
+      if ((req.body.chatroom.user1 !== chatroom.user1) && (req.body.chatroom.user2 !== chatroom.user2)) {
+        return 'You are not involved in this project'
       }
       // pass the result of Mongoose's `.update` to the next `.then`
-      return Game.findOneAndUpdate({_id: req.params.id}, req.body.game, {new: true})
+      return Chatroom.findOneAndUpdate({_id: req.params.id}, req.body.chatroom, {new: true})
     })
     // if that succeeded, return 204 and no JSON
-    .then(game => res.status(201).json({ game: game.toObject() }))
+    .then(chatroom => res.status(201).json({ chatroom: chatroom.toObject() }))
     // if an error occurs, pass it to the handler
     .catch(next)
 })
@@ -105,13 +103,13 @@ router.patch('/games/:id', removeBlanks, (req, res, next) => {
 // DESTROY
 // DELETE /games/5a7db6c74d55bc51bdf39793
 router.delete('/games/:id', requireToken, (req, res, next) => {
-  Game.findById(req.params.id)
+  Chatroom.findById(req.params.id)
     .then(handle404)
-    .then(game => {
+    .then(chatroom => {
       // throw an error if current user doesn't own `game`
-      requireOwnership(req, game)
+      requireOwnership(req, chatroom)
       // delete the game ONLY IF the above didn't throw
-      game.deleteOne()
+      chatroom.deleteOne()
     })
     // send back 204 and no content if the deletion succeeded
     .then(() => res.sendStatus(204))
