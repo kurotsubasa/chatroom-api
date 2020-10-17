@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const gameSchema = new mongoose.Schema({
+const projectSchema = new mongoose.Schema({
   user1: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -10,6 +10,14 @@ const gameSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  messages: [{
+    type: String,
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    }
+  }],
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -19,4 +27,4 @@ const gameSchema = new mongoose.Schema({
   timestamps: true
 })
 
-module.exports = mongoose.model('Game', gameSchema)
+module.exports = mongoose.model('Project', projectSchema)

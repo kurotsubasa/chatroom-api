@@ -6,7 +6,7 @@ const cors = require('cors')
 // require route files
 const exampleRoutes = require('./app/routes/example_routes')
 const userRoutes = require('./app/routes/user_routes')
-const chatroomRoutes = require('./app/routes/chatroom_routes')
+const projectRoutes = require('./app/routes/project_routes')
 
 // require middleware
 const errorHandler = require('./lib/error_handler')
@@ -63,7 +63,7 @@ app.use(requestLogger)
 // register route files
 app.use(exampleRoutes)
 app.use(userRoutes)
-app.use(chatroomRoutes)
+app.use(projectRoutes)
 
 // register error handling middleware
 // note that this comes after the route middlewares, because it needs to be
@@ -81,9 +81,9 @@ io.on('connection', (socketIo) => {
   console.log('User connected')
 
   socketIo.on('new peep', (data) => {
-    const fighter = data
-    console.log(fighter)
-    io.emit('new peep', fighter)
+    const message = data
+    console.log(message)
+    io.emit('new peep', message)
   })
 
   socketIo.on('disconnect', () => {
