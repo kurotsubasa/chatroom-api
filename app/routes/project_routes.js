@@ -87,10 +87,6 @@ router.patch('/projects/:id', removeBlanks, (req, res, next) => {
       if (project.user2 === undefined) {
         return Project.findOneAndUpdate({_id: req.params.id}, req.body.project, {new: true})
       }
-
-      if ((req.body.project.user1 !== project.user1) && (req.body.project.user2 !== project.user2)) {
-        return 'You are not involved in this project'
-      }
       // pass the result of Mongoose's `.update` to the next `.then`
       return Project.findOneAndUpdate({_id: req.params.id}, req.body.project, {new: true})
     })
