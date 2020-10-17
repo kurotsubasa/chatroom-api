@@ -11,7 +11,10 @@ const projectSchema = new mongoose.Schema({
     ref: 'User'
   },
   messages: [{
-    type: String,
+    werd: {
+      type: String,
+      required: true
+    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
