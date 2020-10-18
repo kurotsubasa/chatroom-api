@@ -10,6 +10,14 @@ const projectSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  user1Email: {
+    type: String,
+    unique: true
+  },
+  user2Email: {
+    type: String,
+    unique: true
+  },
   messages: [{
     werd: {
       type: String,
