@@ -1,1 +1,1 @@
-# naya-chat-api
+# chattr-api
