@@ -30,7 +30,7 @@ const router = express.Router()
 // GET /projects
 router.get('/projects', requireToken, (req, res, next) => {
   const userId = req.user._id
-  Project.find({owner: userId})
+  Project.find({user1: userId} || {user2: userId})
     .sort({updatedAt: -1})
     // respond with status 200 and JSON of the projects
     .then(projects => res.status(200).json({ projects: projects }))
