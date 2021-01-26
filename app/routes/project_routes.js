@@ -29,13 +29,9 @@ const router = express.Router()
 // INDEX
 // GET /projects
 router.get('/projects', requireToken, (req, res, next) => {
-  Project.find()
-    .then(projects => {
-      // `projects` will be an array of Mongoose documents
-      // we want to convert each one to a POJO, so we use `.map` to
-      // apply `.toObject` to each one
-      return projects.map(project => project.toObject())
-    })
+  const userId = req.user._id
+  Project.find({owner: userId})
+    .sort({updatedAt: -1})
     // respond with status 200 and JSON of the projects
     .then(projects => res.status(200).json({ projects: projects }))
     // if an error occurs, pass it to the handler
